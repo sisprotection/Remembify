@@ -14,8 +14,9 @@ function createSupabaseClient() {
       ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
     ];
     const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    console.warn(`[Supabase] ${message}`);
+    // Return null instead of throwing to allow the app to run without Supabase
+    return null;
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
@@ -27,14 +28,36 @@ function createSupabaseClient() {
   });
 }
 
-let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
+let _supabase: ReturnType<typeof createSupabaseClient>;
+let _initialized = false;
+
+function getSupabase() {
+  if (!_initialized) {
+    _supabase = createSupabaseClient();
+    _initialized = true;
+  }
+  return _supabase;
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
-export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
+export const supabase = new Proxy({} as NonNullable<ReturnType<typeof createSupabaseClient>>, {
   get(_, prop, receiver) {
-    if (!_supabase) _supabase = createSupabaseClient();
-    return Reflect.get(_supabase, prop, receiver);
+    const client = getSupabase();
+    if (!client) {
+      // Return a mock that won't crash when Supabase is not configured
+      if (prop === 'auth') {
+        return {
+          onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+          getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+          signOut: () => Promise.resolve({ error: null }),
+          signInWithPassword: () => Promise.resolve({ data: { session: null, user: null }, error: { message: 'Supabase not configured' } }),
+          signUp: () => Promise.resolve({ data: { session: null, user: null }, error: { message: 'Supabase not configured' } }),
+        };
+      }
+      return undefined;
+    }
+    return Reflect.get(client, prop, receiver);
   },
 });
 
