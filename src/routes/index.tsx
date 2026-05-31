@@ -84,13 +84,13 @@ function Hero() {
         <h1 className="mt-6 text-balance text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight">
           Never forget{" "}
           <span className="relative inline-block">
-            <span className="bg-gradient-primary bg-clip-text text-transparent">what matters</span>
+            <span className="text-gradient-primary">what matters</span>
             <span aria-hidden className="absolute inset-x-0 -bottom-1 h-[0.18em] rounded-full bg-gradient-primary opacity-40" />
           </span>
           .
         </h1>
         <p className="mt-4 font-display text-sm md:text-base font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-          Meet <span className="text-foreground">Remember<span className="bg-gradient-primary bg-clip-text text-transparent">ly</span></span>
+          Meet <span className="text-foreground">Remember<span className="text-gradient-primary">Fi</span></span>
         </p>
         <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
           RememberFi nudges you by time <em>and</em> place. Set a grocery list at Walmart, a reminder when you leave the office, or let our AI assistant turn a passing thought into a saved memory — all in one calm space.
