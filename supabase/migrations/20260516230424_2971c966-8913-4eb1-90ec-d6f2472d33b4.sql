@@ -1,0 +1,10 @@
+REVOKE EXECUTE ON FUNCTION public.is_staff(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.is_owner(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.has_active_subscription(uuid, text) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.notify_ticket_message() FROM PUBLIC, anon, authenticated;
+
+GRANT EXECUTE ON FUNCTION public.is_staff(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_owner(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.has_active_subscription(uuid, text) TO authenticated;
